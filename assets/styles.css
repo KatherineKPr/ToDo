@@ -1,3 +1,118 @@
-.marked{
+@font-face {
+    font-family: 'DroidSerif';
+    src: url(fonts/DroidSerif.ttf);
+}
+
+@font-face {
+    font-family: 'Raleway';
+    src: url(fonts/Raleway.ttf);
+}
+
+.marked {
     text-decoration: line-through;
+}
+
+.marked::before{
+    content: "\2713";
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url(images/background.png);
+    background-size: cover;
+}
+
+.main {
+    margin: 0 auto;
+    width: 500px;
+}
+
+.inputBlock {
+    margin: 45px 0px;
+}
+
+input, #addButton, .tasksListBlock{
+    font-family: Raleway;
+}
+
+input{
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #7a6a3b;
+    padding: 4px;
+    font-size: 20px;
+    
+}
+
+input:focus{
+    background-color: transparent;
+}
+
+input::-webkit-input-placeholder{
+    color:  #5a4400;
+ }
+
+input::-moz-placeholder{
+    color:  #5a4400;
+}
+
+#addButton{
+    float: right;
+    padding: 9px;
+    border: 1px solid#cca26529;
+    border-radius: 7px;
+}
+
+#addButton:hover{
+    background-color: rgb(255 228 187 / 29%);
+    transition: 0.5s;
+}
+
+input, #addButton, .closeButton{
+    color: #5a4400;
+}
+
+#addButton, .closeButton, li{
+    cursor: pointer;
+}
+
+ul{
+    list-style-type: none;
+}
+
+.liBlock{
+    background-color: rgb(255 228 187 / 29%);
+    margin-top: 4px;
+    padding: 4px 13px;
+    border: 1px solid#cca26529;
+    border-radius: 7px;
+    line-height: 30px;
+    transition: 0.5s;
+}
+
+.liBlock:hover {
+    background-color: rgb(255 255 255 / 40%);
+}
+
+li{
+    display: inline;
+    color: #967719;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.closeButton{
+    float: right;
+    font-size: 25px;
+    transition: 0.3s;
+}
+
+.closeButton:hover {
+    font-size: 30px;
 }

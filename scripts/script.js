@@ -24,11 +24,18 @@ function addListItem() {
         else {
             let newListItem = document.createElement("LI");
             newListItem.innerHTML = input.value;
-            list.prepend(newListItem);
-            input.value = "";
 
             let closeButton = addCloseBtn();
-            newListItem.append(closeButton);       
+            newListItem.after(closeButton);
+
+            let liBlock = document.createElement("div");
+            liBlock.className = "liBlock";
+
+            liBlock.append(newListItem);
+            liBlock.append(closeButton);
+
+            list.prepend(liBlock);
+            input.value = "";
         }
     }, false);
 }
@@ -37,7 +44,7 @@ function addCloseBtnToExistingList() {
     let i;
     for (i = 0; i < listItems.length; i++) {
         let closeButton = addCloseBtn();
-        listItems[i].append(closeButton);
+        listItems[i].after(closeButton);
     }
 }
 function markCompletedTask() {
@@ -45,7 +52,7 @@ function markCompletedTask() {
     list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов
         // listItems[i].classList.toggle("marked"); так нельзя, событие не обрабатывается, li считается неопределенным
         if (event.target.tagName === "LI") {//именно элемент списка
-            event.target.classList.toggle("marked");//естьь такой класс-удаляет как remove, нет-добавляет как add
+            event.target.classList.toggle("marked");//есть такой класс-удаляет как remove, нет-добавляет как add
         }
     }, false);
 }
@@ -54,6 +61,7 @@ addListItem();
 addCloseBtnToExistingList();
 deleteListItem();
 markCompletedTask();
+
 
 
 
