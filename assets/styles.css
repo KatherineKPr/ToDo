@@ -12,10 +12,6 @@
     text-decoration: line-through;
 }
 
-.marked::before{
-    content: "\2713";
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -33,6 +29,7 @@ body {
 
 .inputBlock {
     margin: 45px 0px;
+    display: flex;    
 }
 
 input, #addButton, .tasksListBlock{
@@ -61,10 +58,10 @@ input::-moz-placeholder{
 }
 
 #addButton{
-    float: right;
-    padding: 9px;
-    border: 1px solid#cca26529;
+    padding: 2px 9px;
     border-radius: 7px;
+    font-size: 29px;
+    margin: 0px 3px;
 }
 
 #addButton:hover{
@@ -115,5 +112,35 @@ li:hover {
 }
 
 li:hover>.closeButton{
-    display: inline;;
+    display: inline;
 }
+
+#switcher{
+    display: inline-block;
+    margin-top: 18px;
+    border: 1px solid #ffedc8;
+    border-radius: 10px;
+    background: #ffedc8;
+    cursor: pointer;
+}
+
+#switcher:hover label{
+    cursor: pointer;
+}
+
+input[name = "switch"]{
+    display: none;
+}
+
+label::before{
+    content: '';
+    border-radius: 12px;
+    padding: 0.1px 9px;
+    transition: 0.4s;
+}
+
+input[name = "switch"]:checked+label::before{
+   background:#ffa60038;
+ }
+
+

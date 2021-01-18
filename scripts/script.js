@@ -51,11 +51,29 @@ function markCompletedTask() {
         }
     }, false);
 }
+function switchListItemsState() {
+    let listItems = document.getElementsByTagName("LI");
+    let off = document.getElementById("off");
+    let on = document.getElementById("on");
+    let i;
+    off.addEventListener('change', function () {
+        for (i = 0; i < listItems.length; i++) {
+            listItems[i].classList.remove("marked");
+        }
+    })
+    on.addEventListener('change', function () {
+        for (i = 0; i < listItems.length; i++) {
+            listItems[i].classList.add("marked");
+        }
+    })
+}
 
 addListItem();
 addCloseBtnToExistingList();
 deleteListItem();
 markCompletedTask();
+switchListItemsState();
+
 
 
 

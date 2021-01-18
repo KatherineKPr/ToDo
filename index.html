@@ -13,8 +13,15 @@
     <main class="main">
         <div class="inputBlock">
             <input id="input" type="text" placeholder="Type your task here" size="40">
-            <span id="addButton">Add</span>
+            <span id="addButton">+</span>
+            <div id="switcher">
+                <input type="radio" id="off" name="switch" value="off" checked>
+                <label for="off"></label>
+                <input type="radio" id="on" name="switch" value="on">
+                <label for="on"></label>
+            </div>
         </div>
+        
         <div class="tasksListBlock">
             <ul id="list">
                 <li>Cook pizza</li>
