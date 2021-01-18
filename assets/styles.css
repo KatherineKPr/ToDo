@@ -84,7 +84,12 @@ ul{
     list-style-type: none;
 }
 
-.liBlock{
+li{
+    color: #967719;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     background-color: rgb(255 228 187 / 29%);
     margin-top: 4px;
     padding: 4px 13px;
@@ -94,25 +99,21 @@ ul{
     transition: 0.5s;
 }
 
-.liBlock:hover {
+li:hover {
     background-color: rgb(255 255 255 / 40%);
 }
 
-li{
-    display: inline;
-    color: #967719;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .closeButton{
-    float: right;
     font-size: 25px;
     transition: 0.3s;
+    float: right;
+    display: none;
 }
 
 .closeButton:hover {
     font-size: 30px;
+}
+
+li:hover>.closeButton{
+    display: inline;;
 }

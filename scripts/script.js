@@ -26,15 +26,10 @@ function addListItem() {
             newListItem.innerHTML = input.value;
 
             let closeButton = addCloseBtn();
-            newListItem.after(closeButton);
+            newListItem.append(closeButton);
 
-            let liBlock = document.createElement("div");
-            liBlock.className = "liBlock";
+            list.prepend(newListItem);
 
-            liBlock.append(newListItem);
-            liBlock.append(closeButton);
-
-            list.prepend(liBlock);
             input.value = "";
         }
     }, false);
@@ -44,7 +39,7 @@ function addCloseBtnToExistingList() {
     let i;
     for (i = 0; i < listItems.length; i++) {
         let closeButton = addCloseBtn();
-        listItems[i].after(closeButton);
+        listItems[i].append(closeButton);
     }
 }
 function markCompletedTask() {
@@ -61,7 +56,6 @@ addListItem();
 addCloseBtnToExistingList();
 deleteListItem();
 markCompletedTask();
-
 
 
 
