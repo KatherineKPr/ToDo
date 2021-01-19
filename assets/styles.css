@@ -24,7 +24,7 @@ body {
 
 .main {
     margin: 0 auto;
-    width: 500px;
+    width: 524px;
 }
 
 .inputBlock {
@@ -61,6 +61,9 @@ input::-moz-placeholder{
     padding: 2px 9px;
     border-radius: 7px;
     font-size: 29px;
+}
+
+#addButton, .import{
     margin: 0px 3px;
 }
 
@@ -73,7 +76,7 @@ input, #addButton, .closeButton{
     color: #5a4400;
 }
 
-#addButton, .closeButton, li{
+#addButton, .closeButton, li, .import{
     cursor: pointer;
 }
 
@@ -118,10 +121,10 @@ li:hover>.closeButton{
 #switcher{
     display: inline-block;
     margin-top: 18px;
+    height: 18px;
     border: 1px solid #ffedc8;
     border-radius: 10px;
     background: #ffedc8;
-    cursor: pointer;
 }
 
 #switcher:hover label{
@@ -132,7 +135,7 @@ input[name = "switch"]{
     display: none;
 }
 
-label::before{
+.switch::before{
     content: '';
     border-radius: 12px;
     padding: 0.1px 9px;
@@ -141,6 +144,14 @@ label::before{
 
 input[name = "switch"]:checked+label::before{
    background:#ffa60038;
+ }
+
+ input[name = "import"]{
+     display: none;
+ }
+
+ .import{
+    font-size: 24px;
  }
 
 
