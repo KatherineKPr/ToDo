@@ -28,6 +28,7 @@ function getToDoItemsObjects(reader) {
     let properties = stringArray[0].split(',');
     for (let i = 1; i < stringArray.length; i++) {
         let values = stringArray[i].split(',');
+        
         let toDoItem = {};
         for (let j = 0; j < properties.length; j++) {
             toDoItem[properties[j].trim()] = values[j].trim();
@@ -45,6 +46,9 @@ function handleTasksListBox(toDoList) {
     for (let i = 0; i < toDoList.length; i++) {
         let li = document.createElement("LI");
         li.innerHTML = toDoList[toDoList.length-1-i].text;
+        if(toDoList[toDoList.length-1-i].completed === "true"){
+            li.classList.add("marked");
+        }
         ul.prepend(li);
     }
     tasksListBox.append(ul);
