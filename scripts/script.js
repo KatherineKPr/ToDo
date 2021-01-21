@@ -9,7 +9,7 @@ function importFile() {
         reader.onload = function () { //файл загружен
             console.log(reader.result);
             let toDoList = getToDoItemsObjects(reader);
-            console.log(JSON.stringify(toDoList));
+            console.log(JSON.stringify(toDoList)); //вывод объектов
             handleTasksListBox(toDoList);
         };
 
@@ -28,7 +28,7 @@ function getToDoItemsObjects(reader) {
     let properties = stringArray[0].split(',');
     for (let i = 1; i < stringArray.length; i++) {
         let values = stringArray[i].split(',');
-        
+
         let toDoItem = {};
         for (let j = 0; j < properties.length; j++) {
             toDoItem[properties[j].trim()] = values[j].trim();
@@ -37,24 +37,25 @@ function getToDoItemsObjects(reader) {
     }
     return toDoList;
 }
-function handleTasksListBox(toDoList) {
+function handleTasksListBox(toDoList, toDoListExist) {
     let main = document.getElementsByClassName("main")[0];
-    let tasksListBox = document.createElement("DIV");
-    tasksListBox.className = "tasksListBlock";
-    let ul = document.createElement("UL");
-    ul.id = "list";
+    let tasksListBox;
+    let ul;
+    let loadedListLength = toDoList.length;
+
+    tasksListBox = document.getElementsByClassName("tasksListBlock")[0];
+    ul = document.getElementById("list");
+
     for (let i = 0; i < toDoList.length; i++) {
         let li = document.createElement("LI");
-        li.innerHTML = toDoList[toDoList.length-1-i].text;
-        if(toDoList[toDoList.length-1-i].completed === "true"){
-            li.classList.add("marked");
+        li.innerHTML = toDoList[toDoList.length - 1 - i].text;
+        if (toDoList[toDoList.length - 1 - i].completed === "true") {
+            li.classList.add("completed");
         }
         ul.prepend(li);
     }
-    tasksListBox.append(ul);
-    main.append(tasksListBox);
 
-    addCloseBtnToExistingList();
+    addCloseBtnToExistingList(loadedListLength);
     deleteListItem();
     addListItem();
     markCompletedTask();
@@ -67,10 +68,10 @@ function addCloseBtn() {
     closeButton.append(txt);
     return closeButton;
 }
-function addCloseBtnToExistingList() {
+function addCloseBtnToExistingList(loadedListLength) {
     let listItems = document.getElementsByTagName("LI");
     let i;
-    for (i = 0; i < listItems.length; i++) {
+    for (i = 0; i < loadedListLength; i++) {
         let closeButton = addCloseBtn();
         listItems[i].append(closeButton);
     }
@@ -88,10 +89,7 @@ function addListItem() {
     let input = document.getElementById("input");
     let list = document.getElementById("list");
     addButton.addEventListener('click', function () {
-        if (input.value === "") {
-            alert("You should fill the field");
-        }
-        else {
+        if (!(input.value === "")) {
             let newListItem = document.createElement("LI");
             newListItem.innerHTML = input.value;
 
@@ -101,15 +99,15 @@ function addListItem() {
             list.prepend(newListItem);
 
             input.value = "";
-        }
+        }        
     }, false);
 }
 function markCompletedTask() {
     let list = document.getElementById("list");
     list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов
-        // listItems[i].classList.toggle("marked"); так нельзя, событие не обрабатывается, li считается неопределенным
+        // listItems[i].classList.toggle("completed"); так нельзя, событие не обрабатывается, li считается неопределенным
         if (event.target.tagName === "LI") {//именно элемент списка
-            event.target.classList.toggle("marked");//есть такой класс-удаляет как remove, нет-добавляет как add
+            event.target.classList.toggle("completed");//есть такой класс-удаляет как remove, нет-добавляет как add
         }
     }, false);
 }
@@ -120,12 +118,12 @@ function switchListItemsState() {
     let i;
     off.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
-            listItems[i].classList.remove("marked");
+            listItems[i].classList.remove("completed");
         }
     })
     on.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
-            listItems[i].classList.add("marked");
+            listItems[i].classList.add("completed");
         }
     })
 }
