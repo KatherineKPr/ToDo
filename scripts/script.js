@@ -3,7 +3,7 @@ function importFile() {
 
     let importInput = document.getElementById("import");
     importInput.addEventListener('change', function () {
-        fileLoaded = false;
+
         let file = importInput.files[0];// сам файл
         let reader = new FileReader();
         reader.readAsText(file); //для получения строки
@@ -12,12 +12,17 @@ function importFile() {
 
             console.log(reader.result);
 
+            let replaceToDos = pollUser();
+            if (replaceToDos) {
+                clearToDoList();
+            }
+
             let toDoList = getToDoItemsObjects(reader);
             console.log(JSON.stringify(toDoList)); //вывод объектов
 
             handleTasksListBox(toDoList);
 
-           
+
         };
 
         reader.onerror = function () {
@@ -26,6 +31,18 @@ function importFile() {
 
     }, false)
 
+}
+function pollUser() {
+    let replaceToDos = confirm("Do you want replace todos?");
+    return replaceToDos;
+}
+function clearToDoList() {
+    let list = document.getElementById("list");
+    let listLength = list.children.length;
+    for (let i = 0; i < listLength; i++) {
+        console.log(list.firstChild);
+        list.removeChild(list.firstChild);
+    }
 }
 function getToDoItemsObjects(reader) {
     let toDoList = [];
@@ -45,9 +62,9 @@ function getToDoItemsObjects(reader) {
     return toDoList;
 }
 function handleTasksListBox(toDoList) {
-   
-    let ul = document.getElementById("list"); 
-       
+
+    let ul = document.getElementById("list");
+
     for (let i = 0; i < toDoList.length; i++) {
         let li = document.createElement("LI");
         li.innerHTML = toDoList[toDoList.length - 1 - i].text;
