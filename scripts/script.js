@@ -17,7 +17,7 @@ function importFile() {
                 clearToDoList();
             }
 
-            let toDoList = getToDoItemsObjects(reader);
+            let toDoList = convertFileContentToJSON(reader);
             console.log(JSON.stringify(toDoList)); //вывод объектов
 
             handleTasksListBox(toDoList);
@@ -44,15 +44,17 @@ function clearToDoList() {
         list.removeChild(list.firstChild);
     }
 }
-function getToDoItemsObjects(reader) {
+function convertFileContentToJSON(reader) {
     let toDoList = [];
     let fileString;
     fileString = reader.result;
     let stringArray = fileString.split('\n'); //массив из строк файла
     let properties = stringArray[0].split(',');
     for (let i = 1; i < stringArray.length; i++) {
+        if(stringArray[i] === ""){ //пустая строка
+            break;
+        }
         let values = stringArray[i].split(',');
-
         let toDoItem = {};
         for (let j = 0; j < properties.length; j++) {
             toDoItem[properties[j].trim()] = values[j].trim();
@@ -144,13 +146,57 @@ function switchListItemsState() {
         }
     })
 }
+function exportFile() {
+    let exportButton = document.getElementById("exportButton");
+    exportButton.addEventListener('click', function () {
+        let toDoList = convertHTMLtoJSON();
+        console.log(JSON.stringify(toDoList));
+
+        let fileText = convertJSONToFileText(toDoList);
+        console.log(fileText);
+
+        let file = writeToFile(fileText);
+        exportButton.href = URL.createObjectURL(file); //создает DOMString, содержащий URL с указанием на объект, заданный как параметр
+        exportButton.download = file.name; //не переходит по ссылке, апредлагает скачать док
+    }, false)
+
+}
+function convertHTMLtoJSON() {
+    let toDoList = [];
+    let list = document.getElementById("list");
+    let properties = ["text", "completed"];
+    for (let i = 0; i < list.children.length; i++) {
+        let toDoItem = {};
+        toDoItem[properties[0]] = list.children[i].textContent.slice(0, -1); //inner html - с тегами, 0-начало, -1-до предпоследнего символа
+        if (list.children[i].classList.contains("completed")) {
+            toDoItem[properties[1]] = "true";
+        }
+        else {
+            toDoItem[properties[1]] = "false";
+        }
+        toDoList.push(toDoItem);
+    }
+    return toDoList;
+}
+function convertJSONToFileText(toDoList) {
+    let fileText = [];
+    fileText.push("text, completed\n");
+    for (let i = 0; i < toDoList.length; i++) {
+        fileText.push(toDoList[i].text + ", " + toDoList[i].completed + "\n");
+    }
+    return fileText;
+}
+function writeToFile(fileText) {
+    let file = new File(fileText, "toDoList.csv");
+    return file;
+}
 
 importFile();
 deleteListItem();
 addListItem();
 markCompletedTask();
 switchListItemsState();
-
+exportFile();
 
 
 
