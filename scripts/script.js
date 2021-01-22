@@ -1,16 +1,23 @@
+
 function importFile() {
 
     let importInput = document.getElementById("import");
     importInput.addEventListener('change', function () {
+        fileLoaded = false;
         let file = importInput.files[0];// сам файл
         let reader = new FileReader();
         reader.readAsText(file); //для получения строки
         //события
         reader.onload = function () { //файл загружен
+
             console.log(reader.result);
+
             let toDoList = getToDoItemsObjects(reader);
             console.log(JSON.stringify(toDoList)); //вывод объектов
+
             handleTasksListBox(toDoList);
+
+           
         };
 
         reader.onerror = function () {
@@ -37,15 +44,10 @@ function getToDoItemsObjects(reader) {
     }
     return toDoList;
 }
-function handleTasksListBox(toDoList, toDoListExist) {
-    let main = document.getElementsByClassName("main")[0];
-    let tasksListBox;
-    let ul;
-    let loadedListLength = toDoList.length;
-
-    tasksListBox = document.getElementsByClassName("tasksListBlock")[0];
-    ul = document.getElementById("list");
-
+function handleTasksListBox(toDoList) {
+   
+    let ul = document.getElementById("list"); 
+       
     for (let i = 0; i < toDoList.length; i++) {
         let li = document.createElement("LI");
         li.innerHTML = toDoList[toDoList.length - 1 - i].text;
@@ -55,11 +57,9 @@ function handleTasksListBox(toDoList, toDoListExist) {
         ul.prepend(li);
     }
 
+    let loadedListLength = toDoList.length;
     addCloseBtnToExistingList(loadedListLength);
-    deleteListItem();
-    addListItem();
-    markCompletedTask();
-    switchListItemsState();
+
 }
 function addCloseBtn() {
     let closeButton = document.createElement("SPAN");
@@ -99,7 +99,7 @@ function addListItem() {
             list.prepend(newListItem);
 
             input.value = "";
-        }        
+        }
     }, false);
 }
 function markCompletedTask() {
@@ -129,7 +129,10 @@ function switchListItemsState() {
 }
 
 importFile();
-
+deleteListItem();
+addListItem();
+markCompletedTask();
+switchListItemsState();
 
 
 
