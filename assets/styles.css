@@ -76,7 +76,7 @@ input, #addButton, .closeButton{
     color: #5a4400;
 }
 
-#addButton, .closeButton, li, .import{
+#addButton, .closeButton, li, .import, #exportButton{
     cursor: pointer;
 }
 
@@ -150,8 +150,9 @@ input[name = "switch"]:checked+label::before{
      display: none;
  }
 
- .import{
+ .import, #exportButton{
     font-size: 24px;
+    color: #ffffff9c;
  }
 
 
