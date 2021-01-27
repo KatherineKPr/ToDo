@@ -1,3 +1,6 @@
+const COMPLETED = "completed"
+const TEXT = "text"
+let currentToDoList = [];
 
 function importFile() {
 
@@ -22,7 +25,7 @@ function importFile() {
 
             handleTasksListBox(toDoList);
 
-
+            fillTasksStatusBar();
         };
 
         reader.onerror = function () {
@@ -51,7 +54,7 @@ function convertFileContentToJSON(reader) {
     let stringArray = fileString.split('\n'); //массив из строк файла
     let properties = stringArray[0].split(',');
     for (let i = 1; i < stringArray.length; i++) {
-        if(stringArray[i] === ""){ //пустая строка
+        if (stringArray[i] === "") { //пустая строка
             break;
         }
         let values = stringArray[i].split(',');
@@ -61,23 +64,25 @@ function convertFileContentToJSON(reader) {
         }
         toDoList.push(toDoItem); //массив объектов
     }
+
     return toDoList;
 }
 function handleTasksListBox(toDoList) {
 
     let ul = document.getElementById("list");
 
-    for (let i = 0; i < toDoList.length; i++) {
+    for (let i = toDoList.length - 1; i >= 0; i--) {
         let li = document.createElement("LI");
-        li.innerHTML = toDoList[toDoList.length - 1 - i].text;
-        if (toDoList[toDoList.length - 1 - i].completed === "true") {
-            li.classList.add("completed");
+        li.innerHTML = toDoList[i].text;
+        if (toDoList[i].completed === "true") {
+            li.classList.add(COMPLETED);
         }
+
+        let closeButton = addCloseBtn();
+        li.append(closeButton);
+
         ul.prepend(li);
     }
-
-    let loadedListLength = toDoList.length;
-    addCloseBtnToExistingList(loadedListLength);
 
 }
 function addCloseBtn() {
@@ -87,22 +92,18 @@ function addCloseBtn() {
     closeButton.append(txt);
     return closeButton;
 }
-function addCloseBtnToExistingList(loadedListLength) {
-    let listItems = document.getElementsByTagName("LI");
-    let i;
-    for (i = 0; i < loadedListLength; i++) {
-        let closeButton = addCloseBtn();
-        listItems[i].append(closeButton);
-    }
-}
-function deleteListItem() {//замечание:если обрабатываются нажатия на список элементов, лучше-event.target
+function deleteListItem() { //замечание:если обрабатываются нажатия на список элементов, лучше-event.target
     let list = document.getElementById("list");
-    list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов
-        if (event.target.className === "closeButton") {//именно "крестик"
-            event.target.parentElement.style.display = "none";
+    list.addEventListener('click', function (event) { //ul-т.к. будет отслеживание вложенных элементов
+        if (event.target.className === "closeButton") { //именно "крестик"
+          //  let itemIndexToDelete = Array.from(list.children).indexOf(event.target.parentElement);
+            event.target.parentElement.remove(); //не скрыть а удалить
+
+            fillTasksStatusBar();
         }
     }, false);
 }
+
 function addListItem() {
     let addButton = document.getElementById("addButton");
     let input = document.getElementById("input");
@@ -112,21 +113,39 @@ function addListItem() {
             let newListItem = document.createElement("LI");
             newListItem.innerHTML = input.value;
 
+            //let toDoItem = {};
+            //toDoItem[TEXT] = newListItem.innerHTML;
+            //toDoItem[COMPLETED] = "false";
+            // currentToDoList.unshift(toDoItem);
+            //console.log(JSON.stringify(currentToDoList));
+
             let closeButton = addCloseBtn();
             newListItem.append(closeButton);
 
             list.prepend(newListItem);
 
             input.value = "";
+
+            fillTasksStatusBar();
         }
     }, false);
 }
 function markCompletedTask() {
     let list = document.getElementById("list");
-    list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов
-        // listItems[i].classList.toggle("completed"); так нельзя, событие не обрабатывается, li считается неопределенным
+    list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов       
         if (event.target.tagName === "LI") {//именно элемент списка
-            event.target.classList.toggle("completed");//есть такой класс-удаляет как remove, нет-добавляет как add
+         //   let itemIndexToMark = Array.from(list.children).indexOf(event.target);
+            event.target.classList.toggle(COMPLETED);//есть такой класс-удаляет как remove, нет-добавляет как add
+
+            //   if (event.target.classList.contains(COMPLETED)) {
+            //       currentToDoList[itemIndexToMark].completed = "true";
+            //  }
+            //  else {
+            //      currentToDoList[itemIndexToMark].completed = "false";
+            //  }
+            // console.log(JSON.stringify(currentToDoList));
+
+            fillTasksStatusBar();
         }
     }, false);
 }
@@ -137,14 +156,16 @@ function switchListItemsState() {
     let i;
     off.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
-            listItems[i].classList.remove("completed");
+            listItems[i].classList.remove(COMPLETED);
         }
     })
     on.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
-            listItems[i].classList.add("completed");
+            listItems[i].classList.add(COMPLETED);
         }
     })
+
+    fillTasksStatusBar();
 }
 function exportFile() {
     let exportButton = document.getElementById("exportButton");
@@ -164,15 +185,14 @@ function exportFile() {
 function convertHTMLtoJSON() {
     let toDoList = [];
     let list = document.getElementById("list");
-    let properties = ["text", "completed"];
     for (let i = 0; i < list.children.length; i++) {
         let toDoItem = {};
-        toDoItem[properties[0]] = list.children[i].textContent.slice(0, -1); //inner html - с тегами, 0-начало, -1-до предпоследнего символа
-        if (list.children[i].classList.contains("completed")) {
-            toDoItem[properties[1]] = "true";
+        toDoItem[TEXT] = list.children[i].textContent.slice(0, -1); //inner html - с тегами, 0-начало, -1-до предпоследнего символа
+        if (list.children[i].classList.contains(COMPLETED)) {
+            toDoItem[COMPLETED] = "true";
         }
         else {
-            toDoItem[properties[1]] = "false";
+            toDoItem[COMPLETED] = "false";
         }
         toDoList.push(toDoItem);
     }
@@ -180,7 +200,7 @@ function convertHTMLtoJSON() {
 }
 function convertJSONToFileText(toDoList) {
     let fileText = [];
-    fileText.push("text, completed\n");
+    fileText.push(TEXT + ", " + COMPLETED + "\n");
     for (let i = 0; i < toDoList.length; i++) {
         fileText.push(toDoList[i].text + ", " + toDoList[i].completed + "\n");
     }
@@ -190,7 +210,28 @@ function writeToFile(fileText) {
     let file = new File(fileText, "toDoList.csv");
     return file;
 }
+function fillTasksStatusBar() {
+    let list = document.getElementById("list");
+    let statusBar = document.getElementById("statusBar");
+    if (!list.children.length) {
+        statusBar.children[0].textContent = "completed:0 uncompleted:0";
+    }
+    else {
+        statusBar.children[0].textContent = `completed:${getCompletedTasksCount()} uncompleted:${list.children.length - getCompletedTasksCount()}`;
+    }
+}
+function getCompletedTasksCount() {
+    let list = document.getElementById("list");
+    let completedTasksCount = 0;
+    for (let i = 0; i < list.children.length; i++) {
+        if (list.children[i].classList.contains(COMPLETED)) {
+            completedTasksCount++;
+        }
+    }
+    return completedTasksCount;
+}
 
+fillTasksStatusBar();
 importFile();
 deleteListItem();
 addListItem();

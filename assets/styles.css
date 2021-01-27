@@ -28,11 +28,11 @@ body {
 }
 
 .inputBlock {
-    margin: 45px 0px;
+    margin: 16px 0px;
     display: flex;    
 }
 
-input, #addButton, .tasksListBlock{
+input, #addButton, .tasksListBlock, #statusBar{
     font-family: Raleway;
 }
 
@@ -153,6 +153,10 @@ input[name = "switch"]:checked+label::before{
  .import, #exportButton{
     font-size: 24px;
     color: #ffffff9c;
+ }
+
+ #statusBar{
+     color: #9b6500;
  }
 
 
