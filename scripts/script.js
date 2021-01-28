@@ -18,10 +18,12 @@ function importFile() {
             let replaceToDos = pollUser();
             if (replaceToDos) {
                 clearToDoList();
+                clearToDoListsObjects();
             }
 
-            let toDoList = convertFileContentToJSON(reader);
-            console.log(JSON.stringify(toDoList)); //вывод объектов
+            convertFileContentToJSON(reader);
+            clearToDoList();
+            let toDoList = getSortedList();
 
             handleTasksListBox(toDoList);
 
@@ -43,17 +45,21 @@ function clearToDoList() {
     let list = document.getElementById("list");
     let listLength = list.children.length;
     for (let i = 0; i < listLength; i++) {
-        console.log(list.firstChild);
         list.removeChild(list.firstChild);
     }
 }
+function clearToDoListsObjects() {
+    while (currentToDoList.length > 0) {
+        currentToDoList.splice(0, 1);
+    }
+    console.log(JSON.stringify(currentToDoList));
+}
 function convertFileContentToJSON(reader) {
-    let toDoList = [];
     let fileString;
     fileString = reader.result;
     let stringArray = fileString.split('\n'); //массив из строк файла
     let properties = stringArray[0].split(',');
-    for (let i = 1; i < stringArray.length; i++) {
+    for (let i = stringArray.length - 1; i >= 1; i--) {
         if (stringArray[i] === "") { //пустая строка
             break;
         }
@@ -62,10 +68,10 @@ function convertFileContentToJSON(reader) {
         for (let j = 0; j < properties.length; j++) {
             toDoItem[properties[j].trim()] = values[j].trim();
         }
-        toDoList.push(toDoItem); //массив объектов
+        currentToDoList.unshift(toDoItem);
     }
 
-    return toDoList;
+    console.log(JSON.stringify(currentToDoList));
 }
 function handleTasksListBox(toDoList) {
 
@@ -96,8 +102,11 @@ function deleteListItem() { //замечание:если обрабатываю
     let list = document.getElementById("list");
     list.addEventListener('click', function (event) { //ul-т.к. будет отслеживание вложенных элементов
         if (event.target.className === "closeButton") { //именно "крестик"
-          //  let itemIndexToDelete = Array.from(list.children).indexOf(event.target.parentElement);
+            let itemIndexToDelete = Array.from(list.children).indexOf(event.target.parentElement);
             event.target.parentElement.remove(); //не скрыть а удалить
+
+            currentToDoList.splice(itemIndexToDelete, 1);
+            console.log(JSON.stringify(currentToDoList));
 
             fillTasksStatusBar();
         }
@@ -113,11 +122,11 @@ function addListItem() {
             let newListItem = document.createElement("LI");
             newListItem.innerHTML = input.value;
 
-            //let toDoItem = {};
-            //toDoItem[TEXT] = newListItem.innerHTML;
-            //toDoItem[COMPLETED] = "false";
-            // currentToDoList.unshift(toDoItem);
-            //console.log(JSON.stringify(currentToDoList));
+            let toDoItem = {};
+            toDoItem[TEXT] = newListItem.innerHTML;
+            toDoItem[COMPLETED] = "false";
+            currentToDoList.unshift(toDoItem);
+            console.log(JSON.stringify(currentToDoList));
 
             let closeButton = addCloseBtn();
             newListItem.append(closeButton);
@@ -134,16 +143,16 @@ function markCompletedTask() {
     let list = document.getElementById("list");
     list.addEventListener('click', function (event) {//ul-т.к. будет отслеживание вложенных элементов       
         if (event.target.tagName === "LI") {//именно элемент списка
-         //   let itemIndexToMark = Array.from(list.children).indexOf(event.target);
+            let itemIndexToMark = Array.from(list.children).indexOf(event.target);
             event.target.classList.toggle(COMPLETED);//есть такой класс-удаляет как remove, нет-добавляет как add
 
-            //   if (event.target.classList.contains(COMPLETED)) {
-            //       currentToDoList[itemIndexToMark].completed = "true";
-            //  }
-            //  else {
-            //      currentToDoList[itemIndexToMark].completed = "false";
-            //  }
-            // console.log(JSON.stringify(currentToDoList));
+            if (event.target.classList.contains(COMPLETED)) {
+                currentToDoList[itemIndexToMark].completed = "true";
+            }
+            else {
+                currentToDoList[itemIndexToMark].completed = "false";
+            }
+            console.log(JSON.stringify(currentToDoList));
 
             fillTasksStatusBar();
         }
@@ -157,12 +166,16 @@ function switchListItemsState() {
     off.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
             listItems[i].classList.remove(COMPLETED);
+            currentToDoList[i].completed = "false";
         }
+        console.log(JSON.stringify(currentToDoList));
     })
     on.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
             listItems[i].classList.add(COMPLETED);
+            currentToDoList[i].completed = "true";
         }
+        console.log(JSON.stringify(currentToDoList));
     })
 
     fillTasksStatusBar();
@@ -229,6 +242,20 @@ function getCompletedTasksCount() {
         }
     }
     return completedTasksCount;
+}
+function getSortedList() {
+    let completedToDoList = [];
+    let uncompletedToDoList = [];
+    for (let i = 0; i < currentToDoList.length; i++) {
+        if (currentToDoList[i].completed === "true") {
+            completedToDoList.push(currentToDoList[i]);
+        }
+        else {
+            uncompletedToDoList.push(currentToDoList[i]);
+        }
+    }
+    let sortedToDoList = uncompletedToDoList.concat(completedToDoList);
+    return sortedToDoList;
 }
 
 fillTasksStatusBar();
