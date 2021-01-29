@@ -1,5 +1,8 @@
 const COMPLETED = "completed"
 const TEXT = "text"
+const RANDOM_TO_DO_COUNT = 3
+const MIN_INDEX = 1;
+const MAX_INDEX = 201;
 let currentToDoList = [];
 
 function importFile() {
@@ -192,7 +195,7 @@ function exportFile() {
         let file = writeToFile(fileText);
         exportButton.href = URL.createObjectURL(file); //создает DOMString, содержащий URL с указанием на объект, заданный как параметр
         exportButton.download = file.name; //не переходит по ссылке, а предлагает скачать док
-    
+
     }, false)
 
 }
@@ -243,17 +246,63 @@ function getSortedList() {
     return sortedToDoList;
 }
 function addItemtoCompletedListHead(itemIndexToMark) {
-    let list = document.getElementById("list");    
+    let list = document.getElementById("list");
     for (let i = list.children.length - 1; i >= 0; i--) {
-        if(!list.children[i].classList.contains(COMPLETED)){
+        if (!list.children[i].classList.contains(COMPLETED)) {
             list.children[i].after(list.children[itemIndexToMark]); //сразу после последнего невыполненного
             break;
         }
     }
 }
-function addItemtoUncompletedListHead(itemIndexToMark){
-    let list = document.getElementById("list");    
+function addItemtoUncompletedListHead(itemIndexToMark) {
+    let list = document.getElementById("list");
     list.children[0].before(list.children[itemIndexToMark]);
+}
+function generateThreeRandomToDos() {
+    let toDosGeneratingButton = document.getElementById("toDosGeneratingButton");
+    toDosGeneratingButton.addEventListener('click', async function () {
+        for (let i = 0; i < RANDOM_TO_DO_COUNT; i++) {
+
+            generateRandomNumber(MIN_INDEX, MAX_INDEX);
+
+            let response = await fetch(`https://jsonplaceholder.typicode.com/todos/${randomNumber}`);
+            let toDoItem = await response.json();
+
+            let newListItem = {}
+            newListItem[TEXT] = toDoItem.title;
+            newListItem[COMPLETED] = toDoItem.completed;
+
+            currentToDoList.unshift(newListItem);
+
+            addRandomItemToList(toDoItem);
+            
+        }
+        console.log(JSON.stringify(currentToDoList));
+        fillTasksStatusBar();
+
+    }, false);
+
+}
+function generateRandomNumber(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return randomNumber = Math.floor(Math.random() * (max - min)) + min;
+}
+function addRandomItemToList(toDoItem){
+    let ul = document.getElementById("list");
+    let li = document.createElement("LI");
+
+    li.innerHTML = toDoItem.title;
+
+    let closeButton = addCloseBtn();
+    li.append(closeButton);
+
+    ul.prepend(li);
+
+    if (toDoItem.completed === true) {
+        li.classList.add(COMPLETED);
+        addItemtoCompletedListHead(0);
+    }
 }
 
 fillTasksStatusBar();
@@ -263,6 +312,7 @@ addListItem();
 markCompletedTask();
 switchListItemsState();
 exportFile();
+generateThreeRandomToDos();
 
 
 

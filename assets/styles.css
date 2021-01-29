@@ -20,7 +20,7 @@ body {
 
 .main {
     margin: 0 auto;
-    width: 562px;
+    width: 585px;
 }
 
 .inputBlock {
@@ -72,7 +72,7 @@ input, #addButton, .closeButton{
     color: #5a4400;
 }
 
-#addButton, .closeButton, li, .import, #exportButton{
+#addButton, .closeButton, li, .import, #exportButton, #toDosGeneratingButton{
     cursor: pointer;
 }
 
@@ -146,7 +146,7 @@ input[name = "switch"]:checked+label::before{
      display: none;
  }
 
- .import, #exportButton{
+ .import, #exportButton, #toDosGeneratingButton{
     font-size: 24px;
     color: #ffffff9c;
  }
