@@ -185,33 +185,16 @@ function switchListItemsState() {
 function exportFile() {
     let exportButton = document.getElementById("exportButton");
     exportButton.addEventListener('click', function () {
-        let toDoList = convertHTMLtoJSON();
-        console.log(JSON.stringify(toDoList));
 
-        let fileText = convertJSONToFileText(toDoList);
+        let fileText = convertJSONToFileText(currentToDoList);
         console.log(fileText);
 
         let file = writeToFile(fileText);
         exportButton.href = URL.createObjectURL(file); //создает DOMString, содержащий URL с указанием на объект, заданный как параметр
-        exportButton.download = file.name; //не переходит по ссылке, апредлагает скачать док
+        exportButton.download = file.name; //не переходит по ссылке, а предлагает скачать док
+    
     }, false)
 
-}
-function convertHTMLtoJSON() {
-    let toDoList = [];
-    let list = document.getElementById("list");
-    for (let i = 0; i < list.children.length; i++) {
-        let toDoItem = {};
-        toDoItem[TEXT] = list.children[i].textContent.slice(0, -1); //inner html - с тегами, 0-начало, -1-до предпоследнего символа
-        if (list.children[i].classList.contains(COMPLETED)) {
-            toDoItem[COMPLETED] = "true";
-        }
-        else {
-            toDoItem[COMPLETED] = "false";
-        }
-        toDoList.push(toDoItem);
-    }
-    return toDoList;
 }
 function convertJSONToFileText(toDoList) {
     let fileText = [];
