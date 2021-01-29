@@ -45,7 +45,7 @@ function clearToDoList() {
     let list = document.getElementById("list");
     let listLength = list.children.length;
     for (let i = 0; i < listLength; i++) {
-        list.removeChild(list.firstChild);
+        list.children[0].remove();
     }
 }
 function clearToDoListsObjects() {
@@ -148,9 +148,11 @@ function markCompletedTask() {
 
             if (event.target.classList.contains(COMPLETED)) {
                 currentToDoList[itemIndexToMark].completed = "true";
+                addItemtoCompletedListHead(itemIndexToMark);
             }
             else {
                 currentToDoList[itemIndexToMark].completed = "false";
+                addItemtoUncompletedListHead(itemIndexToMark);
             }
             console.log(JSON.stringify(currentToDoList));
 
@@ -169,6 +171,7 @@ function switchListItemsState() {
             currentToDoList[i].completed = "false";
         }
         console.log(JSON.stringify(currentToDoList));
+        fillTasksStatusBar();
     })
     on.addEventListener('change', function () {
         for (i = 0; i < listItems.length; i++) {
@@ -176,9 +179,8 @@ function switchListItemsState() {
             currentToDoList[i].completed = "true";
         }
         console.log(JSON.stringify(currentToDoList));
+        fillTasksStatusBar();
     })
-
-    fillTasksStatusBar();
 }
 function exportFile() {
     let exportButton = document.getElementById("exportButton");
@@ -256,6 +258,19 @@ function getSortedList() {
     }
     let sortedToDoList = uncompletedToDoList.concat(completedToDoList);
     return sortedToDoList;
+}
+function addItemtoCompletedListHead(itemIndexToMark) {
+    let list = document.getElementById("list");    
+    for (let i = list.children.length - 1; i >= 0; i--) {
+        if(!list.children[i].classList.contains(COMPLETED)){
+            list.children[i].after(list.children[itemIndexToMark]); //сразу после последнего невыполненного
+            break;
+        }
+    }
+}
+function addItemtoUncompletedListHead(itemIndexToMark){
+    let list = document.getElementById("list");    
+    list.children[0].before(list.children[itemIndexToMark]);
 }
 
 fillTasksStatusBar();
