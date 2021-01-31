@@ -15,19 +15,19 @@
         <div class="inputBlock">
             <input id="input" type="text" placeholder="Type your task here" size="40">
             <label for="input"></label>
-            <span id="addButton">+</span>
-            <div id="switcher">
+            <span id="addButton" title="add new todo">+</span>
+            <div id="switcher" title="switch todos state">
                 <input type="radio" id="off" name="switch" value="off" checked>
                 <label for="off" class="switch"></label>
                 <input type="radio" id="on" name="switch" value="on">
                 <label for="on" class="switch"></label>
             </div>
-            <div id="fileImport">
+            <div id="fileImport" title="import csv-file with todos">
                 <input type="file" id="import" name="import">
                 <label for="import" class="import">&#128206;</label>
             </div>
-            <a id="exportButton">&#128229;</a>
-            <a id="toDosGeneratingButton">&#127922</a>
+            <a id="exportButton" title="export currrent todo list">&#128229;</a>
+            <a id="toDosGeneratingButton" title="generate 3 random todos">&#127922</a>
         </div>
         <div id="statusBar">
             <p></p>
